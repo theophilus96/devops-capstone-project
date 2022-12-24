@@ -34,7 +34,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip wheel
           find . -regex '.*requirements.txt$'
-          pip install -r devops-capstone-project/aolwx-devops-capstone-template-main/requirements.txt
+          pip install -r ./aolwx-devops-capstone-template-main/requirements.txt
 
       - name: Lint with flake8
         run: |
