@@ -122,7 +122,7 @@ class TestAccountService(TestCase):
             content_type="test/html"
         )
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-    
+
     ######################################################################
     #  E R R O R   H A N D L E R   T E S T   C A S E S
     ######################################################################
@@ -132,10 +132,10 @@ class TestAccountService(TestCase):
         resp = self.client.delete(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    
     ######################################################################
     #  R E A D   T E S T   C A S E S
     ######################################################################
+
     def test_get_account(self):
         """It should Read a single Account"""
         account = self._create_accounts(1)[0]
@@ -149,7 +149,7 @@ class TestAccountService(TestCase):
     ######################################################################
     #  L I S T   T E S T   C A S E S
     ######################################################################
-    
+
     def test_get_account_list(self):
         """It should Get a list of Accounts"""
         self._create_accounts(5)
@@ -161,7 +161,7 @@ class TestAccountService(TestCase):
     ######################################################################
     #  U P D A T E   T E S T   C A S E S
     ######################################################################
-    
+
     def test_update_account(self):
         """It should Update an existing Account"""
         # create an Account to update
@@ -185,15 +185,12 @@ class TestAccountService(TestCase):
         account = self._create_accounts(1)[0]
         resp = self.client.delete(f"{BASE_URL}/{account.id}")
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-    
-
 
     ######################################################################
     #  C O D E   C O V E R A G E   T E S T   C A S E S
     ######################################################################
+
     def test_get_account_not_found(self):
         """It should not Read an Account that is not found"""
         resp = self.client.get(f"{BASE_URL}/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-
-    # ADD YOUR TEST CASES HERE ...
