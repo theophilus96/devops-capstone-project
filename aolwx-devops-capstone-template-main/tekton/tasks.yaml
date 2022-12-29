@@ -50,3 +50,33 @@ spec:
           rm -rf "${WORKSPACE_SOURCE_PATH}"/..?*
         fi
 
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: flake8check
+spec:
+  description: This task will check for flake8.
+  workspaces:
+    - name: source
+  steps:
+      # Add an extra step to list the contents of /workspace
+      # You might add this before or after another Task
+      - name: flake8-check
+        image: "python:3.9-slim"
+        env:
+        - name: WORKSPACE_SOURCE_PATH
+          value: $(workspaces.source.path)
+        workingDir: $(workspaces.source.path)
+        script: |
+          #!/bin/bash
+          set -e
+          ls
+          cd ${WORKSPACE_SOURCE_PATH}
+          ls
+          cd aolwx-devops-capstone-template-main
+          ls
+          python -m pip install --upgrade pip wheel
+          pip install -qr requirements.txt
+          flake8 --version
+          flake8 --count --max-complexity=10 --max-line-length=127 --statistics
