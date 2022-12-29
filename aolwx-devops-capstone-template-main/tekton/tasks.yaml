@@ -63,7 +63,7 @@ spec:
       # Add an extra step to list the contents of /workspace
       # You might add this before or after another Task
       - name: flake8-check
-        image: "python:3.9-slim"
+        image: python:3.9-slim
         env:
         - name: WORKSPACE_SOURCE_PATH
           value: $(workspaces.source.path)
@@ -76,7 +76,46 @@ spec:
           ls
           cd aolwx-devops-capstone-template-main
           ls
+          
+          echo "***** Installing dependencies *****"
           python -m pip install --upgrade pip wheel
           pip install -qr requirements.txt
+
+          echo "***** check flake8 version"
           flake8 --version
+
+          echo "***** Running lint with flake8"
           flake8 --count --max-complexity=10 --max-line-length=127 --statistics
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: nose
+spec:
+  description: This task will run nosetests on the provided input.
+  workspaces:
+    - name: source
+  params:
+    - name: args
+      description: Arguments to pass to nose
+      type: string
+      default: "-v"
+    - name: database_uri
+      description: Database connection string
+      type: string
+      default: "sqlite:///test.db"
+  steps:
+    - name: nosetests
+      image: python:3.9-slim
+      workingDir: $(workspaces.source.path)
+      env:
+        - name: DATABASE_URI
+          value: $(params.database_uri)
+      script: |
+        #!/bin/bash
+        set -e
+        cd ${WORKSPACE_SOURCE_PATH}
+
+        echo "***** Running nosetests with: $(params.args)"
+        nosetests $(params.args)
